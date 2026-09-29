@@ -20,7 +20,7 @@ object Ink {
     val Acid   = Color(0xFFD8FF3E)   // the one accent
     val Blood  = Color(0xFFFF3B1F)   // errors / the found bug
 
-    val Dim    = Color(0xFF6B6A63)   // secondary text
+    val Dim    = Color(0xFF8A887F)   // secondary text (5.6:1 on Ground)
     val Faint  = Color(0xFF2A2A27)   // 1px rules, inactive borders
     val AddBg  = Color(0x1AD8FF3E)   // added line wash
     val DelBg  = Color(0x14FF3B1F)   // removed line wash
@@ -66,7 +66,7 @@ object Type {
         fontFamily = Mono,
         fontSize = 10.sp,
         lineHeight = 17.sp,
-        color = Ink.Faint,
+        color = Ink.Dim,
     )
 
     /** Telemetry footer — small, dim, always truthful. */

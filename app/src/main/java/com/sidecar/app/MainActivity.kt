@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.sidecar.app.model.ReviewState
+import androidx.compose.runtime.rememberCoroutineScope
 import com.sidecar.app.model.SampleDiff
+import com.sidecar.app.review.FakeEngine
+import com.sidecar.app.review.ReviewController
 import com.sidecar.app.ui.ReviewScreen
 
 class MainActivity : ComponentActivity() {
@@ -17,17 +16,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Stub wiring until MediaPipe lands on D1-with-device.
-            var state by remember { mutableStateOf(ReviewState(hunk = SampleDiff.hunk)) }
-            ReviewScreen(
-                state = state,
-                onRun = {
-                    state = state.copy(
-                        output = SampleDiff.finding,
-                        tokensPerSec = 18.4,
-                    )
-                },
-            )
+            val scope = rememberCoroutineScope()
+            val controller = remember {
+                // Swapped for GemmaEngine once the device is in hand. Until then
+                // the telemetry footer says "fake" rather than naming a model
+                // that is not running.
+                ReviewController(
+                    engine = FakeEngine(SampleDiff.finding),
+                    scope = scope,
+                    hunk = SampleDiff.hunk,
+                )
+            }
+            ReviewScreen(state = controller.state, onRun = controller::run)
         }
     }
 }
