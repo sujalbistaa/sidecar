@@ -55,6 +55,9 @@ is fine. Do not build the rule pass before Oct 5 — it does not show on camera.
 - Model lives at `/data/local/tmp/llm/model.task`, pushed via adb. **Never bundled in the APK.**
 - **Transport: adb over USB.** Venue wifi is always broken, and USB survives airplane mode —
   which is the entire demo. LAN is fallback only.
+- **`LlmInference` is deprecated — ignore it.** The successor, `com.google.ai.edge.litertlm`,
+  is at `0.0.0-alpha05`. Deprecated is not broken, and this is still the API Google's Android
+  guide uses. Do not migrate before the finale.
 - **No emulator, ever.** MediaPipe LLM Inference does not run on emulators.
 - **No NPU / QNN before the finale.** Cannot be tested on the dev device. Day-one stretch goal.
 
