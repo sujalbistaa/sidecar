@@ -8,8 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.sidecar.app.model.SampleDiff
 import com.sidecar.app.review.FakeEngine
+import com.sidecar.app.review.GemmaEngine
 import com.sidecar.app.review.ReviewController
-import com.sidecar.app.ui.ReviewScreen
+import com.sidecar.app.ui.SidecarApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,16 +19,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             val scope = rememberCoroutineScope()
             val controller = remember {
-                // Swapped for GemmaEngine once the device is in hand. Until then
-                // the telemetry footer says "fake" rather than naming a model
-                // that is not running.
+                // Use the real model when it has been pushed to the device,
+                // otherwise fall back so every screen still works. The telemetry
+                // footer names whichever engine is actually running.
+                val loaded = GemmaEngine.isInstalled()
                 ReviewController(
-                    engine = FakeEngine(SampleDiff.finding),
+                    engine = if (loaded) {
+                        GemmaEngine(applicationContext)
+                    } else {
+                        FakeEngine(SampleDiff.finding)
+                    },
                     scope = scope,
                     hunk = SampleDiff.hunk,
+                    modelLoaded = loaded,
                 )
             }
-            ReviewScreen(state = controller.state, onRun = controller::run)
+            SidecarApp(controller)
         }
     }
 }

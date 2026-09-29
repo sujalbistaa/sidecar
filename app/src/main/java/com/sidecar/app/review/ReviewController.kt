@@ -18,13 +18,14 @@ class ReviewController(
     private val engine: ReviewEngine,
     private val scope: CoroutineScope,
     hunk: Hunk,
+    val modelLoaded: Boolean = false,
 ) {
     var state by mutableStateOf(ReviewState(hunk = hunk, model = engine.label))
         private set
 
     fun run() {
         if (state.running) return
-        state = state.copy(running = true, output = "", tokensPerSec = 0.0)
+        state = state.copy(running = true, output = "", tokensPerSec = 0.0, elapsedMs = 0)
 
         scope.launch {
             val buffer = StringBuilder()
@@ -34,6 +35,7 @@ class ReviewController(
                     state = state.copy(
                         output = buffer.toString(),
                         tokensPerSec = token.tokensPerSec,
+                        elapsedMs = token.elapsedMs,
                     )
                 }
             } catch (t: Throwable) {

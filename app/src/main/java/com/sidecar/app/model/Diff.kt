@@ -32,9 +32,15 @@ data class ReviewState(
     val running: Boolean = false,
     val offline: Boolean = true,
     val tokensPerSec: Double = 0.0,
+    val elapsedMs: Long = 0,
     val bytesSent: Int = 0,
     val model: String = "gemma3-1b-it · int4",
-)
+    /** Short verdict used as the Finding screen's headline. */
+    val headline: String = "off‑by‑one",
+) {
+    val elapsedLabel: String
+        get() = if (elapsedMs <= 0) "—" else String.format("%.1fs", elapsedMs / 1000.0)
+}
 
 /**
  * Stub hunk used for previews and until the adb bridge lands on D3.
